@@ -3,6 +3,203 @@ import { OrbitControls } from 'three/addons/controls/OrbitControls.js';
 import { FontLoader } from 'three/examples/jsm/loaders/FontLoader.js';
 import { TextGeometry } from 'three/examples/jsm/geometries/TextGeometry.js';
 
+// ===== OVERLAY & TYPING EFFECT =====
+const welcomeOverlay = document.getElementById('welcomeOverlay');
+const welcomeText = welcomeOverlay.querySelector('.welcomeText');
+const startBtn = document.getElementById('startBtn');
+
+// HINT ELEMENTS
+let musicHint, galaxyHint, finalNotification; // Deklarasikan dulu
+
+const message = "Hi Mba Nia, are you ready for a journey through my galaxy?";
+let i = 0;
+let hint1Shown = false;
+
+function typeWriter() {
+  if (i < message.length) {
+    welcomeText.innerHTML += message.charAt(i);
+    i++;
+    const speed = Math.random() * 100 + 50; 
+    setTimeout(typeWriter, speed);
+  } else {
+    startBtn.style.display = 'inline-block';
+  }
+}
+
+window.addEventListener('DOMContentLoaded', () => {
+  // Check if we should skip the overlay
+  const urlParams = new URLSearchParams(window.location.search);
+  const skipOverlay = urlParams.get('skipOverlay') === 'true';
+
+  // Inisialisasi hint elements setelah DOM siap
+  musicHint = document.getElementById('musicHint');
+  galaxyHint = document.getElementById('galaxyHint');
+  finalNotification = document.getElementById('finalNotification');
+
+  console.log("musicHint found:", musicHint);
+  console.log("galaxyHint found:", galaxyHint);
+  console.log("finalNotification found:", finalNotification);
+
+  // Add click event for final notification
+  if (finalNotification) {
+    finalNotification.addEventListener('click', () => {
+      // Ensure music state is preserved when navigating to pesan.html
+      if (music && !music.paused) {
+        localStorage.setItem('musicPlaying', 'true');
+        localStorage.setItem('musicCurrentTime', music.currentTime.toString());
+      }
+      window.location.href = 'pesan.html';
+    });
+  }
+
+  // Add click events for galaxy navigation buttons
+  const startAgainBtn = document.getElementById('startAgainBtn');
+  const backToMessageBtn = document.getElementById('backToMessageBtn');
+
+  if (startAgainBtn) {
+    startAgainBtn.addEventListener('click', () => {
+      // Stop music completely and go back to overlay
+      if (music) {
+        music.pause();
+        music.currentTime = 0;
+      }
+      localStorage.removeItem('musicPlaying');
+      localStorage.removeItem('musicCurrentTime');
+      window.location.href = 'index.html'; // No skipOverlay parameter
+    });
+  }
+
+  if (backToMessageBtn) {
+    backToMessageBtn.addEventListener('click', () => {
+      // Preserve music state and go back to message
+      if (music && !music.paused) {
+        localStorage.setItem('musicPlaying', 'true');
+        localStorage.setItem('musicCurrentTime', music.currentTime.toString());
+      }
+      window.location.href = 'pesan.html';
+    });
+  }
+
+  if (skipOverlay) {
+    // Skip overlay and go directly to galaxy
+    console.log("Skipping overlay, going directly to galaxy");
+    welcomeOverlay.style.display = 'none';
+
+    // Start the planet 3D immediately
+    startPlanet3D();
+
+    // Show final notification immediately
+    if (finalNotification) {
+      finalNotification.style.display = 'block';
+      finalNotification.style.opacity = '1';
+    }
+
+    // Show galaxy navigation buttons
+    const galaxyNavButtons = document.getElementById('galaxyNavButtons');
+    if (galaxyNavButtons) {
+      galaxyNavButtons.style.display = 'flex';
+    }
+  } else {
+    // Normal flow with overlay
+    typeWriter();
+  }
+});
+
+// Handle music persistence on page load
+window.addEventListener('load', () => {
+  const shouldPlayMusic = localStorage.getItem('musicPlaying') === 'true';
+  const savedTime = parseFloat(localStorage.getItem('musicCurrentTime')) || 0;
+
+  if (shouldPlayMusic && music) {
+    music.currentTime = savedTime;
+    music.play().then(() => {
+      console.log("Music resumed playing from", savedTime, "seconds");
+    }).catch(error => {
+      console.log("Music resume failed:", error);
+    });
+  }
+});
+
+// ===== TOMBOL READY =====
+const music = document.getElementById("bgMusic");
+
+// Pastikan startBtn ada sebelum menambahkan event listener
+if (startBtn) {
+  startBtn.addEventListener('click', () => {
+    console.log("Start button clicked!");
+
+    // === PLAY AUDIO ===
+    if (music) {
+      music.currentTime = 0;
+      music.muted = false;
+      music.play().then(() => {
+        localStorage.setItem('musicPlaying', 'true');
+      }).catch(err => {
+        console.warn("Audio blocked:", err);
+      });
+    }
+
+    // === FADE OVERLAY ===
+    welcomeOverlay.classList.add('fadeOut');
+
+    setTimeout(() => {
+      welcomeOverlay.style.display = 'none';
+      
+      // ✅ TAMPILKAN HINT 1 DI TENGAH
+      if (musicHint) {
+        console.log("Showing musicHint");
+        musicHint.style.display = 'block';
+        musicHint.style.opacity = '0';
+        
+        // Trigger reflow untuk animasi
+        setTimeout(() => {
+          musicHint.style.transition = 'opacity 1s ease-in';
+          musicHint.style.opacity = '1';
+        }, 100);
+      } else {
+        console.error("musicHint not found!");
+      }
+      
+    }, 800);
+  });
+} else {
+  console.error("startBtn not found!");
+}
+// ===== THREE.JS PLANET =====
+function startPlanet3D() {
+
+  // LIGHT
+  const light = new THREE.AmbientLight(0xffffff, 1);
+  scene.add(light);
+
+  // PLANET
+  const geometry = new THREE.SphereGeometry(2, 64, 64);
+  const material = new THREE.MeshStandardMaterial({ color: 0xff69b4 });
+  const planet = new THREE.Mesh(geometry, material);
+  scene.add(planet);
+
+  // ORBIT CONTROLS
+  const controls = new THREE.OrbitControls(camera, renderer.domElement);
+  controls.enableDamping = true;
+
+  // ANIMASI
+  function animate() {
+    requestAnimationFrame(animate);
+    planet.rotation.y += 0.005;
+    controls.update();
+    renderer.render(scene, camera);
+  }
+  animate();
+
+  // RESPONSIVE
+  window.addEventListener('resize', () => {
+    camera.aspect = window.innerWidth / window.innerHeight;
+    camera.updateProjectionMatrix();
+    renderer.setSize(window.innerWidth, window.innerHeight);
+  });
+}
+
+
 const scene = new THREE.Scene();
 scene.fog = new THREE.FogExp2(0x000000, 0.0015);
 
@@ -79,7 +276,7 @@ const galaxyParameters = {
   outsideColor: new THREE.Color(0x48b8b8),
 };
 
-const defaultHeartImages = Array.from({ length: 2 }, (_, i) => `images/img${i + 1}.jpg`);
+const defaultHeartImages = Array.from({ length: 6 }, (_, i) => `images/img${i + 1}.jpeg`);
 
 const heartImages = [
   ...(window.dataCCD?.data?.heartImages || []),
@@ -587,10 +784,10 @@ scene.add(planet);
 
 //Ganti Deskripsi Planet
 const ringTexts = [
-  'Galaxy of love From ...',//untuk deskripsi planet layer 1
-  "I love you",//untuk deskripsi planet layer 2
-  "♡Happy Girlfriend day♡",//untuk deskripsi planet layer 3
-  "01/08/2025",//untuk deskripsi planet layer 4
+  'Happy Birthday My Beloved Sister',//untuk deskripsi planet layer 1
+  "please be happy..",//untuk deskripsi planet layer 2
+  "galaxy of love from indy",//untuk deskripsi planet layer 3
+  "12/01/2025",//untuk deskripsi planet layer 4
   ...(window.dataCCD && window.dataCCD.data.ringTexts ? window.dataCCD.data.ringTexts : [])
 ];
 
@@ -673,22 +870,25 @@ function createTextRings() {
     const ctx = textCanvas.getContext('2d');
 
     ctx.clearRect(0, 0, textCanvas.width, textureHeight);
-    ctx.font = `bold ${fontSize}px Arial, sans-serif`;
-    ctx.fillStyle = 'white';
+
+    // FONT
+    ctx.font = `700 ${fontSize}px 'Poppins', sans-serif`;
     ctx.textAlign = 'left';
     ctx.textBaseline = 'alphabetic';
 
-    ctx.shadowColor = '#e0b3ff';
-    ctx.shadowBlur = 18;
-    ctx.lineWidth = 7;
-    ctx.strokeStyle = '#fff';
-    ctx.strokeText(fullText, 0, textureHeight * 0.82); 
+    // SHADOW / GLOW
+    ctx.shadowColor = '#ff4f9a';
+    ctx.shadowBlur = 20;
 
+    // STROKE (tetap)
+    ctx.lineWidth = 8;
+    ctx.strokeStyle = '#c2185b';
+    ctx.strokeText(fullText, 0, textureHeight * 0.82);
 
-    ctx.shadowColor = '#ffb3de';
-    ctx.shadowBlur = 24;
-    ctx.fillStyle = '#fff';
-    ctx.fillText(fullText, 0, textureHeight * 0.84);
+    // TEXT UTAMA (pink lebih gelap)
+    ctx.fillStyle = '#e91e63';
+    ctx.fillText(fullText, 0, textureHeight * 0.82);
+
 
     const ringTexture = new THREE.CanvasTexture(textCanvas);
     ringTexture.wrapS = THREE.RepeatWrapping;
@@ -784,31 +984,6 @@ function animatePlanetSystem() {
 }
 
 
-let galaxyAudio = null;
-
-function preloadGalaxyAudio() {
-  const audioSources = [
-   "https://www.youtube.com/watch?v=d4OMqGKBl6E&list=RDd4OMqGKBl6E&start_radio=1&ab_channel=ARS"
-  ];
-
-  const randomIndex = Math.floor(Math.random() * audioSources.length);
-  const selectedSrc = audioSources[randomIndex];
-
-  galaxyAudio = new Audio(selectedSrc);
-  galaxyAudio.loop = true;
-  galaxyAudio.volume = 1.0;
-
-  galaxyAudio.preload = "auto";
-}
-
-function playGalaxyAudio() {
-  if (galaxyAudio) {
-    galaxyAudio.play().catch(err => {
-      console.warn("Audio play blocked or delayed:", err);
-    });
-  }
-}
-preloadGalaxyAudio();
 
 
 
@@ -888,7 +1063,7 @@ function createHintIcon() {
 function animateHintIcon(time) {
   if (!hintIcon) return;
 
-  if (!introStarted) {
+  if (hintActive) {
     hintIcon.visible = true;
 
 
@@ -1061,40 +1236,69 @@ function animate() {
 
   renderer.render(scene, camera);
 }
-function createHintText() {
-  const canvasSize = 512;
+function createHintText() { 
+  // 🖌 Canvas lebih besar supaya teks tidak kepotong
+  const canvasWidth = 3000; // lebih lebar
+  const canvasHeight = 1200; // tinggi sesuai 2 baris
   const canvas = document.createElement('canvas');
-  canvas.width = canvas.height = canvasSize;
-  const context = canvas.getContext('2d');
-  const fontSize = 50;
-  const text = 'Happy Girlfriend Day!';
-  context.font = `bold ${fontSize}px Arial, sans-serif`;
-  context.textAlign = 'center';
-  context.textBaseline = 'middle';
-  context.shadowColor = '#ffb3de';
-  context.shadowBlur = 5;
-  context.lineWidth = 2;
-  context.strokeStyle = 'rgba(255, 200, 220, 0.8)';
-  context.strokeText(text, canvasSize / 2, canvasSize / 2);
-  context.shadowColor = '#e0b3ff';
-  context.shadowBlur = 5;
-  context.lineWidth = 2;
-  context.strokeStyle = 'rgba(220, 180, 255, 0.5)';
-  context.strokeText(text, canvasSize / 2, canvasSize / 2);
-  context.shadowColor = 'transparent';
-  context.shadowBlur = 0;
-  context.fillStyle = 'white';
-  context.fillText(text, canvasSize / 2, canvasSize / 2);
-  const textTexture = new THREE.CanvasTexture(canvas);
-  textTexture.needsUpdate = true;
-  const textMaterial = new THREE.MeshBasicMaterial({
-    map: textTexture,
-    transparent: true,
-    side: THREE.DoubleSide
+  canvas.width = canvasWidth;
+  canvas.height = canvasHeight;
+  const ctx = canvas.getContext('2d');
+
+  const text = `Happy Birthday to my beloved sister,\nMba Nia!`;
+
+  const fontSize = 150;
+  const lineHeight = fontSize * 1.3;
+
+  ctx.clearRect(0, 0, canvasWidth, canvasHeight);
+  ctx.font = `900 ${fontSize}px Poppins, Arial, sans-serif`;
+  ctx.textAlign = 'center';
+  ctx.textBaseline = 'middle';
+
+  const lines = text.split('\n');
+  const startY = canvasHeight / 2 - ((lines.length - 1) * lineHeight) / 2;
+
+  lines.forEach((line, i) => {
+    const y = startY + i * lineHeight;
+
+    // Outline hitam
+    ctx.lineWidth = 18;
+    ctx.strokeStyle = 'rgba(0,0,0,0.6)';
+    ctx.strokeText(line, canvasWidth / 2, y);
+
+    // Stroke pink gelap
+    ctx.lineWidth = 14;
+    ctx.strokeStyle = '#8e0038';
+    ctx.strokeText(line, canvasWidth / 2, y);
+
+    // Text utama
+    ctx.shadowColor = '#ff2f92';
+    ctx.shadowBlur = 40;
+    ctx.fillStyle = '#ffffff';
+    ctx.fillText(line, canvasWidth / 2, y);
   });
-  const planeGeometry = new THREE.PlaneGeometry(16, 8);
-  hintText = new THREE.Mesh(planeGeometry, textMaterial);
-  hintText.position.set(0, 15, 0);
+
+  const texture = new THREE.CanvasTexture(canvas);
+  texture.minFilter = THREE.LinearFilter;
+  texture.needsUpdate = true;
+
+  const material = new THREE.MeshBasicMaterial({
+    map: texture,
+    transparent: true,
+    opacity: 1,
+    depthWrite: false,
+    depthTest: false
+  });
+
+  // 🖼 Sesuaikan plane geometry dengan canvas aspect ratio
+  const aspect = canvasWidth / canvasHeight; // 3000 / 1200 = 2.5
+  const planeHeight = 14;
+  const planeWidth = planeHeight * aspect; // otomatis lebih lebar supaya teks muat
+  const planeGeometry = new THREE.PlaneGeometry(planeWidth, planeHeight);
+
+  hintText = new THREE.Mesh(planeGeometry, material);
+  hintText.position.set(0, 16, 0); // posisi tetap di atas galaxy
+
   scene.add(hintText);
 }
 
@@ -1173,6 +1377,8 @@ function startCameraAnimation() {
 const raycaster = new THREE.Raycaster();
 const mouse = new THREE.Vector2();
 let introStarted = false;
+let hintActive = true;
+
 
 
 const originalStarCount = starGeometry.getAttribute('position').count;
@@ -1203,11 +1409,63 @@ function onCanvasClick(event) {
 
   const intersects = raycaster.intersectObject(planet);
   if (intersects.length > 0) {
-    requestFullScreen();
+    console.log("Planet tapped!");
     introStarted = true;
+    hintActive = false;
+
+    // ❌ HIDE HINT 1 immediately on tap
+    if (musicHint && musicHint.style.display === 'block') {
+      console.log("Hiding musicHint immediately...");
+      musicHint.style.display = 'none';
+
+      // Wait 7 seconds, then show hint 2
+      setTimeout(() => {
+        // ✅ SHOW HINT 2 DI POSISI YANG SAMA (TENGAH)
+        if (galaxyHint) {
+          console.log("Showing galaxyHint at center...");
+          galaxyHint.style.display = 'block';
+          galaxyHint.style.opacity = '0';
+
+          // Pastikan posisi benar-benar di tengah
+          // Trigger reflow
+          galaxyHint.offsetHeight;
+
+          // Fade in hint 2
+          galaxyHint.style.transition = 'opacity 1s ease-in';
+          galaxyHint.style.opacity = '1';
+
+          // Auto hide hint 2 setelah 5 detik
+          setTimeout(() => {
+            if (galaxyHint.style.opacity === '1') {
+              console.log("Auto-hiding galaxyHint...");
+              galaxyHint.style.transition = 'opacity 1s ease-out';
+              galaxyHint.style.opacity = '0';
+              setTimeout(() => {
+                galaxyHint.style.display = 'none';
+                // Wait 5 seconds after galaxyHint disappears, then show final notification
+                setTimeout(() => {
+                  if (finalNotification) {
+                    console.log("Showing finalNotification...");
+                    finalNotification.style.display = 'block';
+                    finalNotification.style.opacity = '0';
+                    finalNotification.offsetHeight; // trigger reflow
+                    finalNotification.style.transition = 'opacity 1s ease-in';
+                    finalNotification.style.opacity = '1';
+                  }
+                }, 5000);
+              }, 2000);
+            }
+          }, 5000);
+        } else {
+          console.error("galaxyHint not found!");
+        }
+      }, 7000);
+    } else {
+      console.log("musicHint not displayed, skipping...");
+    }
+
     fadeInProgress = true;
     document.body.classList.add("intro-started");
-    playGalaxyAudio();
 
     startCameraAnimation();
 
@@ -1221,9 +1479,6 @@ renderer.domElement.addEventListener("click", onCanvasClick);
 
 animate();
 
-renderer.domElement.addEventListener('click', onCanvasClick);
-
-animate();
 
 planet.name = 'main-planet';
 centralGlow.name = 'main-glow';

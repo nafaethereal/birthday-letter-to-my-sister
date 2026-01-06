@@ -1,0 +1,68 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Pesan untuk Kakak</title>
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="pesan.css">
+  <audio id="bgMusic" loop>
+    <source src="audio/lagu.mp3" type="audio/mpeg">
+    Your browser does not support the audio element.
+  </audio>
+  <script>
+    window.addEventListener('load', () => {
+      const music = document.getElementById('bgMusic');
+      const shouldPlayMusic = localStorage.getItem('musicPlaying') === 'true';
+      const savedTime = parseFloat(localStorage.getItem('musicCurrentTime')) || 0;
+
+      if (shouldPlayMusic && music) {
+        music.currentTime = savedTime; // Set the saved time before playing
+        // Add a small delay to ensure smooth transition
+        setTimeout(() => {
+          music.play().then(() => {
+            console.log("Music resumed on pesan.html from", savedTime, "seconds");
+          }).catch(error => {
+            console.log("Music resume failed on pesan.html:", error);
+          });
+        }, 100); // 100ms delay for smoother transition
+      }
+    });
+  </script>
+</head>
+<body>
+  <div class="container">
+    <h1 class="title">A New Orbit Begins</h1>
+    <h2>Happy Birthday, Mba Nia.</h2>
+    <p>Another year has quietly passed, and here you are—still kind, still strong, still becoming someone even brighter than before.</p>
+    <p>I hope this year brings you calm days, brave decisions, and moments that feel right, even when life feels uncertain. May your heart always find its way back to peace, just like stars always return to their place in the sky.</p>
+
+    <h3>Thank You for Being You</h3>
+    <p>Thank you for being someone I can look up to, not because you're perfect, but because you're real.</p>
+    <p>Thank you for the patience, the quiet support, the laughter that comes unexpectedly, and the presence that makes things feel lighter without trying too hard.</p>
+    <p>I'm grateful for you—more than I often say.</p>
+
+    <h3>Little Things That Feel Like Home</h3>
+    <p>Some memories don't need big moments. They live in simple things— familiar smiles, shared habits, small routines that somehow stay with me.</p>
+    <p>These are the details that remind me how meaningful it is to have you in my life. Quiet, warm, and lasting.</p>
+
+    <h3>What I Rarely Say Out Loud</h3>
+    <p>I know not every journey has been easy. There were days you stayed strong even when no one noticed how tired you were. Times when you kept going, even without knowing where the path would lead.</p>
+    <p>I hope you know this: you don't have to carry everything alone. You are allowed to rest. You are allowed to choose yourself.</p>
+    <p>And you are more than enough—even on the days you doubt it.</p>
+
+    <h3>Moments I'll Always Keep</h3>
+    <p>These moments may look ordinary to others, but to me, they matter. They remind me that joy doesn't have to be loud, and happiness doesn't need to be perfect to be real.</p>
+    <p>Thank you for the memories—the past ones, and the many more waiting ahead.</p>
+
+    <h3>Written in the Stars</h3>
+    <p>Wherever life takes you next, I hope it leads you to places where you feel appreciated, understood, and genuinely happy.</p>
+    <p>May every wish you carry find its way, stored safely among the brightest stars.</p>
+    <p>Happy Birthday, Mba Nia. This universe is better with you in it.</p>
+
+    <div class="back-button-container">
+      <button id="backButton" onclick="window.location.href='index.html'">Back</button>
+    </div>
+  </div>
+</body>
+</html>

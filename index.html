@@ -1,10 +1,13 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@600;700&display=swap" rel="stylesheet">
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Galaxy with Zoom Effect</title>
+  <title>Galaxy birthday for my sister</title>
+
   <link rel="stylesheet" href="style.css" />
+
   <script type="importmap">
     {
       "imports": {
@@ -15,90 +18,68 @@
       }
     }
   </script>
+
   <style>
-    #player {
-      display: none;
-    }
-    #musicButton {
+    #musicHint {
       position: fixed;
       top: 20px;
       right: 20px;
-      padding: 12px 20px;
-      background-color: #ffffff10;
+      padding: 12px 18px;
+      background: rgba(0,0,0,0.4);
       color: white;
-      border: 1px solid white;
-      border-radius: 8px;
-      cursor: pointer;
-      z-index: 9999;
+      border-radius: 10px;
       font-weight: bold;
-      backdrop-filter: blur(5px);
+      z-index: 9999;
+      animation: pulse 1.5s infinite;
+      cursor: pointer;
     }
-    #musicButton:hover {
-      background-color: #ffffff30;
+
+    @keyframes pulse {
+      0% { opacity: 0.6; }
+      50% { opacity: 1; }
+      100% { opacity: 0.6; }
     }
   </style>
 </head>
 
 <body>
-  <div id="container"></div>
-
-  <div id="landscape-warning">
-    <div class="warning-content">
-      <div class="rotate-icon"></div>
-      <h1>Stellar Bloom</h1>
-      <h1>Tinh Cầu</h1>
-      <div class="stars-bg"></div>
-    </div>
+  <!-- OVERLAY WELCOME -->
+  <div id="welcomeOverlay">
+    <div class="welcomeText"></div>
+    <button id="startBtn" style="display:none;">Yes, I'm ready 🚀</button>
   </div>
 
-  <div id="dark-overlay"></div>
-  <div id="info"></div>
-<h1 style="position: fixed; bottom: 10px; right: 10px; font-size: 18px; font-family: Arial, sans-serif; color: white; background: rgba(0, 0, 0, 0.4); padding: 6px 12px; border-radius: 8px; z-index: 9999;">
-  Create by Miko
-</h1>
-  <button id="musicButton" disabled>Mainkan Musik 🎵</button>
-  <div id="player"></div>
-  <script src="https://www.youtube.com/iframe_api"></script>
-  <script>
-    let player;
-     const startTime = 227;
-    const endTime = 261;
-    window.onYouTubeIframeAPIReady = function() {
-      player = new YT.Player('player', {
-        height: '0',
-        width: '0',
-        videoId: 'd4OMqGKBl6E',
-        playerVars: {
-          autoplay: 0,
-          start: startTime,
-          end: endTime,
-          controls: 0,
-          loop: 1,
-          playlist: 'd4OMqGKBl6E'
-        },
-        events: {
-          onReady: () => {
-            const btn = document.getElementById('musicButton');
-            btn.disabled = false;
-            btn.innerText = "Mainkan Musik 🎵";
-          },
-          onStateChange: (event) => {
-            if (event.data === YT.PlayerState.ENDED) {
-              player.seekTo(90);
-            }
-          }
-        }
-      });
-    };
+  <!-- Container planet 3D -->
+  <div id="container"></div>
 
-    document.getElementById('musicButton').addEventListener('click', () => {
-      if (player) {
-        player.playVideo();
-        document.getElementById('musicButton').style.display = 'none';
-      }
-    });
-  </script>
+  <!-- Audio -->
+  <audio id="bgMusic" autoplay loop muted>
+    <source src="audio/lagu.mp3" type="audio/mpeg">
+  </audio>
 
+  <!-- Petunjuk musik -->
+  <div id="musicHint">Tap sekali di tengah planet</div>
+
+  <!-- Hint baru setelah tap pertama -->
+  <div id="galaxyHint">Putar 360° dan zoom, lalu lihat apa yang ada di galaxy</div>
+
+  <!-- Final notification -->
+  <div id="finalNotification">sudah puas melihat galaxy? <span id="clickHere">click dsni</span></div>
+
+  <!-- Galaxy navigation buttons (only shown when skipOverlay=true) -->
+  <div id="galaxyNavButtons">
+    <button id="startAgainBtn">Start Again</button>
+    <button id="backToMessageBtn">Back to Message</button>
+  </div>
+
+  <!-- Signature / info optional -->
+  <div class="signature">
+    made with love by ur litte sister 🤍 
+  </div>
+  
+  <canvas id="starCanvas"></canvas>
+
+  <!-- Script JS -->
   <script type="module" src="script.js"></script>
 </body>
 </html>
