@@ -1,0 +1,203 @@
+/* ===== BODY (SAMA SEMESTA) ===== */
+body {
+  margin: 0;
+  padding: 0;
+  font-family: 'Poppins', sans-serif;
+  background: url('https://i.pinimg.com/originals/6d/64/e6/6d64e6801fb37e4c6648f7f04b268d82.gif') no-repeat center center fixed;
+  background-size: cover;
+  color: #f0f0f0;
+  min-height: 100vh;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  overflow-y: auto;
+  overflow-x: hidden;
+  position: relative;
+}
+
+  textarea::placeholder {
+    font-family: 'Poppins', sans-serif;
+    color: #666;
+    opacity: 0.8;
+  }
+  
+  /* ===== STARFIELD BACKGROUND ===== */
+  body::before {
+    content: '';
+    position: fixed;
+    inset: 0;
+    background-image:
+      radial-gradient(circle, rgba(255,255,255,0.8) 1px, transparent 1px),
+      radial-gradient(circle, rgba(100,150,255,0.6) 1px, transparent 1px),
+      radial-gradient(circle, rgba(138,43,226,0.4) 1px, transparent 1px),
+      radial-gradient(circle, rgba(255,105,180,0.3) 1px, transparent 1px);
+    background-size: 80px 80px, 120px 120px, 160px 160px, 200px 200px;
+    animation: subtleTwinkle 25s linear infinite;
+    z-index: -2;
+  }
+  
+  /* ===== WISH CONTAINER ===== */
+  .wish-overlay {
+    position: fixed;
+    inset: 0;
+    background: radial-gradient(
+      circle at center,
+      rgba(10, 10, 30, 0.95),
+      rgba(0, 0, 10, 0.98)
+    );
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    z-index: 9999;
+  
+    opacity: 0;
+    pointer-events: none;
+    transition: opacity 0.6s ease;
+  }
+  
+  .wish-overlay.show {
+    opacity: 1;
+    pointer-events: all;
+  }
+  
+  .wish-overlay img {
+    width: 100%;
+    max-width: 100%;
+    transform: scale(0.96);
+    transition: transform 0.6s ease;
+  }
+  
+  .wish-overlay.show img {
+    transform: scale(1);
+  }
+  
+  .wish-container {
+    max-width: 480px;
+    padding: 36px;
+    text-align: center;
+    font-family: 'Poppins', sans-serif;
+    background: linear-gradient(
+      145deg,
+      rgba(15, 15, 50, 0.9),
+      rgba(25, 25, 70, 0.85),
+      rgba(10, 10, 40, 0.9)
+    );
+    border-radius: 24px;
+    border: 2px solid rgba(100, 150, 255, 0.3);
+    box-shadow:
+      0 0 40px rgba(100, 150, 255, 0.35),
+      0 0 80px rgba(138, 43, 226, 0.25),
+      inset 0 0 30px rgba(100, 150, 255, 0.05);
+    backdrop-filter: blur(15px);
+    animation: containerGlow 8s ease-in-out infinite alternate;
+  }
+  
+  /* ===== TITLE ===== */
+  .wish-container h1 {
+    font-size: 2.2em;
+    font-weight: 700;
+    margin-bottom: 10px;
+    color: #ff69b4;
+    text-shadow: 0 0 18px rgba(255, 105, 180, 0.6);
+  }
+  
+  /* ===== INTRO ===== */
+  .intro {
+    font-size: 0.95em;
+    opacity: 0.85;
+    margin-bottom: 24px;
+    color: #dcdcdc;
+    font-family: 'Poppins', sans-serif;
+  }
+  
+  /* ===== TEXTAREA ===== */
+  textarea {
+    width: 95%;
+    height: 110px;
+    padding: 14px;
+    border-radius: 14px;
+    border: none;
+    resize: none;
+    font-family: 'Poppins', sans-serif;
+    font-size: 14px;
+    outline: none;
+    background: rgba(255,255,255,0.95);
+    color: #111;
+  }
+  
+  /* ===== BUTTONS ===== */
+  button {
+    margin-top: 18px;
+    padding: 12px 26px;
+    border-radius: 25px;
+    border: none;
+    font-weight: 600;
+    cursor: pointer;
+    font-family: 'Poppins', sans-serif;
+    transition: all 0.3s ease;
+  }
+  
+  button:hover {
+    transform: translateY(-2px);
+  }
+  
+  /* Send Button */
+  form button {
+    background: linear-gradient(135deg, #6495ed, #87ceeb);
+    color: #fff;
+    box-shadow: 0 4px 15px rgba(100, 149, 237, 0.5);
+  }
+  
+  form button:hover {
+    box-shadow: 0 6px 20px rgba(100, 149, 237, 0.7);
+  }
+  
+  /* ===== SUCCESS TEXT ===== */
+  #wishSuccess {
+    margin-top: 24px;
+    font-size: 1em;
+    color: #e1aaff;
+    text-shadow: 0 0 12px rgba(225, 170, 255, 0.6);
+    font-family: 'Poppins', sans-serif;
+  }
+  
+  /* Finish Button */
+  #finishBtn {
+    margin-top: 28px;
+    background: transparent;
+    color: #fff;
+    border: 1px solid rgba(135, 206, 235, 0.4);
+    font-family: 'Poppins', sans-serif;
+  }
+  
+  #finishBtn:hover {
+    background: rgba(135, 206, 235, 0.15);
+  }
+  
+  /* ===== UTIL ===== */
+  .hidden {
+    display: none;
+  }
+  
+  /* ===== ANIMATIONS ===== */
+  @keyframes subtleTwinkle {
+    0% { opacity: 0.4; }
+    50% { opacity: 0.7; }
+    100% { opacity: 0.4; }
+  }
+  
+  @keyframes containerGlow {
+    0% {
+      box-shadow:
+        0 0 40px rgba(100, 150, 255, 0.35),
+        0 0 80px rgba(138, 43, 226, 0.25),
+        inset 0 0 30px rgba(100, 150, 255, 0.05);
+    }
+    100% {
+      box-shadow:
+        0 0 60px rgba(100, 150, 255, 0.5),
+        0 0 100px rgba(138, 43, 226, 0.35),
+        inset 0 0 40px rgba(100, 150, 255, 0.08);
+    }
+  }
+  

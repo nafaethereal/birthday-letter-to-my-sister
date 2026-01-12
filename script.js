@@ -276,7 +276,7 @@ const galaxyParameters = {
   outsideColor: new THREE.Color(0x48b8b8),
 };
 
-const defaultHeartImages = Array.from({ length: 6 }, (_, i) => `images/img${i + 1}.jpeg`);
+const defaultHeartImages = Array.from({ length: 10 }, (_, i) => `images/img${i + 1}.jpeg`);
 
 const heartImages = [
   ...(window.dataCCD?.data?.heartImages || []),
@@ -787,7 +787,7 @@ const ringTexts = [
   'Happy Birthday My Beloved Sister',//untuk deskripsi planet layer 1
   "please be happy..",//untuk deskripsi planet layer 2
   "galaxy of love from indy",//untuk deskripsi planet layer 3
-  "12/01/2025",//untuk deskripsi planet layer 4
+  "12/01/1988",//untuk deskripsi planet layer 4
   ...(window.dataCCD && window.dataCCD.data.ringTexts ? window.dataCCD.data.ringTexts : [])
 ];
 
@@ -1398,10 +1398,24 @@ function requestFullScreen() {
     elem.msRequestFullscreen();
   }
 }
+function resizeRenderer() {
+  camera.aspect = window.innerWidth / window.innerHeight;
+  camera.updateProjectionMatrix();
+  renderer.setSize(window.innerWidth, window.innerHeight);
+  renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
+}
+
+window.addEventListener('resize', resizeRenderer);
+document.addEventListener('fullscreenchange', resizeRenderer);
 
 function onCanvasClick(event) {
   if (introStarted) return;
-
+  function onCanvasClick(event) {
+    if (introStarted) return;
+  }
+    // 🔥 FULLSCREEN DI TAP PERTAMA (WAJIB DI USER GESTURE)
+    requestFullScreen();
+  
   const rect = renderer.domElement.getBoundingClientRect();
   mouse.x = ((event.clientX - rect.left) / rect.width) * 2 - 1;
   mouse.y = -((event.clientY - rect.top) / rect.height) * 2 + 1;

@@ -101,34 +101,36 @@ canvas {
 }
 #welcomeOverlay {
   position: fixed;
-  top:0; left:0;
-  width:100%; height:100%;
-  background-color: #000; /* hitam solid */
-  background-image:
-    /* Bintang menyala */
-    radial-gradient(circle at 10% 20%, rgba(255, 182, 193, 0.35), transparent 30%),
-    radial-gradient(circle at 70% 10%, rgba(255, 105, 180, 0.3), transparent 40%),
-    radial-gradient(circle at 50% 50%, rgba(138, 43, 226, 0.28), transparent 45%),
-    radial-gradient(circle at 80% 80%, rgba(72, 61, 139, 0.25), transparent 50%),
-    radial-gradient(circle at 30% 70%, rgba(255, 20, 147, 0.32), transparent 40%),
-    /* Gradient galaxy utama */
-    radial-gradient(circle at 50% 40%, rgba(255, 182, 193, 0.4), transparent 35%),
-    radial-gradient(circle at 60% 60%, rgba(138, 43, 226, 0.35), transparent 40%),
-    radial-gradient(circle at 40% 75%, rgba(72, 61, 139, 0.3), transparent 35%);
-
-  background-blend-mode: screen; /* biar layer bintang lebih menonjol di atas hitam */
-
-  color:white;
-  display:flex;
-  justify-content:center;
-  align-items:center;
-  text-align:center;
-  flex-direction:column;
-  font-family:'Poppins', sans-serif;
-  font-size:2em;
-  z-index:1000;
-  overflow:hidden;
+  inset: 0;
+  z-index: 2000;
+  background:
+    linear-gradient(rgba(0,0,0,0.55), rgba(0,0,0,0.55)),
+    url("https://i.pinimg.com/originals/6d/64/e6/6d64e6801fb37e4c6648f7f04b268d82.gif")
+    center / cover no-repeat;
+  overflow: hidden;
 }
+
+#welcomeOverlay .overlayContent {
+  position: relative;
+  z-index: 2;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  height: 100%;
+  color: white;
+  text-align: center;
+}
+.welcomeText {
+  font-family: 'Poppins', sans-serif;
+  font-weight: 600;
+  font-size: 28px;
+  line-height: 1.4;
+  color: white;
+  text-align: center;
+  max-width: 80%;
+}
+
 #starCanvas {
   position: fixed;
   inset: 0;

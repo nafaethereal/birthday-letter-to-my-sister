@@ -1,0 +1,75 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Written in the Stars</title>
+
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="wishbox.css">
+
+  <!-- 🎵 Music lanjut -->
+  <audio id="bgMusic" loop>
+    <source src="audio/lagu.mp3" type="audio/mpeg">
+  </audio>
+
+  <script>
+    window.addEventListener('load', () => {
+      const music = document.getElementById('bgMusic');
+      const shouldPlayMusic = localStorage.getItem('musicPlaying') === 'true';
+      const savedTime = parseFloat(localStorage.getItem('musicCurrentTime')) || 0;
+
+      if (shouldPlayMusic && music) {
+        music.currentTime = savedTime;
+        setTimeout(() => music.play(), 100);
+      }
+    });
+  </script>
+</head>
+
+<body>
+  <div id="wishOverlay" class="wish-overlay">
+    <img
+      src="https://i.pinimg.com/originals/2b/a1/8b/2ba18bbf4d3f6a3b384883545d367c26.gif"
+      alt="Sending wish to the stars"
+    />
+  </div>
+  
+  <div class="wish-container">
+    <h1>Wish Box</h1>
+    <p class="intro">
+      Write any wish you want.
+      They will be kept somewhere among the brightest stars.
+    </p>
+
+    <form id="wishForm">
+      <textarea
+        id="wishInput"
+        placeholder="Write your wish here..."
+        maxlength="150"
+        required
+      ></textarea>
+
+      <button type="submit">Send to the stars ✨</button>
+    </form>
+
+    <img
+      id="wishSending"
+      src="https://i.pinimg.com/originals/2b/a1/8b/2ba18bbf4d3f6a3b384883545d367c26.gif"
+      class="hidden wish-gif"
+      alt="Sending wish to the stars"
+    />
+    
+    <p id="wishSuccess" class="hidden">
+      Disimpan di bintang paling terang,  
+      semoga harapan kamu segera terwujud! 🌟
+    </p>
+    
+    <button id="finishBtn" class="hidden" onclick="window.location.href='index.html'">
+      Back
+    </button>
+  </div>
+
+  <script src="wishbox.js"></script>
+</body>
+</html>

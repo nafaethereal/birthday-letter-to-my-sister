@@ -2,6 +2,7 @@
 <html lang="en">
 <head>
   <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@600;700&display=swap" rel="stylesheet">
+  
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Galaxy birthday for my sister</title>
@@ -18,68 +19,56 @@
       }
     }
   </script>
-
-  <style>
-    #musicHint {
-      position: fixed;
-      top: 20px;
-      right: 20px;
-      padding: 12px 18px;
-      background: rgba(0,0,0,0.4);
-      color: white;
-      border-radius: 10px;
-      font-weight: bold;
-      z-index: 9999;
-      animation: pulse 1.5s infinite;
-      cursor: pointer;
-    }
-
-    @keyframes pulse {
-      0% { opacity: 0.6; }
-      50% { opacity: 1; }
-      100% { opacity: 0.6; }
-    }
-  </style>
 </head>
 
 <body>
-  <!-- OVERLAY WELCOME -->
+
+  <!-- 🌌 OVERLAY WELCOME (GIF BACKGROUND) -->
   <div id="welcomeOverlay">
-    <div class="welcomeText"></div>
-    <button id="startBtn" style="display:none;">Yes, I'm ready 🚀</button>
+
+    <!-- konten di atas GIF -->
+    <div class="overlayContent">
+      <div class="welcomeText"></div>
+      <button id="startBtn" style="display:none;">Yes, I'm ready 🚀</button>
+    </div>
+
   </div>
 
-  <!-- Container planet 3D -->
+  <!-- 🌍 Container planet 3D -->
   <div id="container"></div>
 
-  <!-- Audio -->
+  <!-- 🎵 Audio -->
   <audio id="bgMusic" autoplay loop muted>
     <source src="audio/lagu.mp3" type="audio/mpeg">
   </audio>
 
-  <!-- Petunjuk musik -->
-  <div id="musicHint">Tap sekali di tengah planet</div>
+  <!-- 🔔 Hint musik -->
+  <div id="musicHint">Tap once at the center of the planet.</div>
 
-  <!-- Hint baru setelah tap pertama -->
-  <div id="galaxyHint">Putar 360° dan zoom, lalu lihat apa yang ada di galaxy</div>
+  <!-- 🔄 Hint galaxy -->
+  <div id="galaxyHint">Rotate 360° and zoom in to explore the galaxy.</div>
 
-  <!-- Final notification -->
-  <div id="finalNotification">sudah puas melihat galaxy? <span id="clickHere">click dsni</span></div>
+  <!-- ✨ Final notification -->
+  <div id="finalNotification">
+    Done exploring the galaxy?
+    <span id="clickHere"> click here</span> to continue.
+  </div>
 
-  <!-- Galaxy navigation buttons (only shown when skipOverlay=true) -->
+  <!-- Galaxy navigation buttons -->
   <div id="galaxyNavButtons">
     <button id="startAgainBtn">Start Again</button>
     <button id="backToMessageBtn">Back to Message</button>
   </div>
 
-  <!-- Signature / info optional -->
+  <!-- ✍️ Signature -->
   <div class="signature">
-    made with love by ur litte sister 🤍 
+    made with love by ur little sister 🤍
   </div>
-  
+
   <canvas id="starCanvas"></canvas>
 
-  <!-- Script JS -->
+  <!-- Script -->
   <script type="module" src="script.js"></script>
+
 </body>
 </html>
